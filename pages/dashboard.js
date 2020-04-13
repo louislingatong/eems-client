@@ -1,22 +1,11 @@
 import React from 'react';
-import { connect } from 'react-redux';
 import Router from 'next/router';
+import AdminLayout from '../layouts/admin';
 import initialize from '../utils/Initialize';
-import { logout } from '../services/authService';
+
+import '../scss/styles.scss';
 
 class Dashboard extends React.Component {
-
-    constructor() {
-        super();
-        this.state = {
-            credentials: {
-                email: '',
-                password: ''
-            }
-        };
-
-        this.handleLogout = this.handleLogout.bind(this);
-    }
 
     static getInitialProps(ctx) {
         return initialize(ctx);
@@ -36,32 +25,13 @@ class Dashboard extends React.Component {
         }
     }
 
-    handleLogout(e) {
-        e.preventDefault();
-
-        const { onLogout } = this.props;
-
-        onLogout();
-    }
-
     render() {
         return (
             <React.Fragment>
-                <h3>Welcome to dashboard</h3>
-                <button type="button" onClick={this.handleLogout}>
-                    Logout
-                </button>
+                <AdminLayout />
             </React.Fragment>
         );
     }
 }
 
-const mapDispatchToProps = (dispatch) => {
-    return {
-        onLogout: () => {
-            dispatch(logout());
-        }
-    };
-};
-
-export default connect(null, mapDispatchToProps)(Dashboard);
+export default Dashboard;
