@@ -2,6 +2,8 @@ import React from 'react';
 import Router from 'next/router';
 import initialize from '../utils/Initialize';
 
+import '../scss/styles.scss';
+
 class Index extends React.Component {
 
     static getInitialProps(ctx) {
