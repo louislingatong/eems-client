@@ -1,9 +1,10 @@
 import { Provider } from 'react-redux';
 import App from 'next/app';
 import withRedux from 'next-redux-wrapper';
-import { initStore } from '../redux';
+import { initStore } from '../store';
 
 class MyApp extends App {
+
     static async getInitialProps({ Component, ctx }) {
         const pageProps = Component.getInitialProps ? await Component.getInitialProps(ctx) : {};
         return {pageProps};

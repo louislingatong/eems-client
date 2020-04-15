@@ -8,7 +8,7 @@ import CustomCard from '../../components/custom-card/CustomCard';
 import CustomCardHeader from '../../components/custom-card/CustomCardHeader';
 import CustomCardBody from '../../components/custom-card/CustomCardBody';
 import CustomCardFooter from '../../components/custom-card/CustomCardFooter';
-import Form from './components/LoginForm';
+import Form from '../../components/layouts/login/LoginForm';
 // services
 import { login } from '../../services/authService';
 

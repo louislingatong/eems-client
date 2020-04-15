@@ -1,4 +1,5 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import classNames from 'classnames';
 import Router from 'next/router';
 // @material-ui/core components
@@ -17,7 +18,7 @@ import Notifications from '@material-ui/icons/Notifications';
 // styles
 import styles from '../../../../assets/jss/styles/layouts/components/sub-menu/subMenuStyle.js';
 // components
-import CustomButton from '../../../../components/custom-button/CustomButton';
+import CustomButton from '../../../custom-button/CustomButton';
 // services
 import { logout } from '../../../../services/authService';
 
@@ -38,10 +39,15 @@ class Menu extends React.Component {
         this.handleClickNotification = this.handleClickNotification.bind(this);
         this.handleCloseNotification = this.handleCloseNotification.bind(this);
         this.handleRedirect = this.handleRedirect.bind(this);
-        this.handleLogout = this.handleLogout.bind(this);
     }
 
     componentDidMount() {
+        if (window.innerWidth <= 960) {
+            this.setState({
+                isMobile: true
+            });
+        }
+
         window.addEventListener('resize', this.handleWindowResize);
     }
 
@@ -110,13 +116,8 @@ class Menu extends React.Component {
         Router.push(route);
     }
 
-    handleLogout(e) {
-        e.preventDefault();
-        this.props.dispatch(logout());
-    }
-
     render() {
-        const { classes } = this.props;
+        const { classes, auth, onLogout } = this.props;
         const { openProfile, openNotification, isMobile } = this.state;
         return (
             <div>
@@ -184,7 +185,7 @@ class Menu extends React.Component {
                     >
                         <AccountBox className={classes.linkIcon}/>
                         <Hidden mdUp implementation="css">
-                            <p className={classes.linkText}>Admin</p>
+                            <p className={classes.linkText}>{ auth.me ? auth.me.name : ''}</p>
                         </Hidden>
                     </CustomButton>
                     <Popper
@@ -211,14 +212,14 @@ class Menu extends React.Component {
                                     <ClickAwayListener onClickAway={(e) => this.handleCloseProfile(e)}>
                                         <MenuList role="menu">
                                             <MenuItem
-                                                onClick={(e) => this.handleRedirect(e, '/profile')}
+                                                onClick={(e) => this.handleRedirect(e, `/profile/${ auth.me ? auth.me.id : ''}`)}
                                                 className={classes.dropdownItem}
                                             >
                                                 Profile
                                             </MenuItem>
                                             <Divider light />
                                             <MenuItem
-                                                onClick={(e) => this.handleLogout(e)}
+                                                onClick={onLogout}
                                                 className={classes.dropdownItem}
                                             >
                                                 Logout
@@ -235,4 +236,18 @@ class Menu extends React.Component {
     }
 }
 
-export default withStyles(styles)(Menu);
+const mapStateToProps = state => {
+    return {
+        auth: state.auth,
+    };
+};
+
+const mapDispatchToProps = dispatch => {
+    return {
+        onLogout: () => {
+            dispatch(logout());
+        }
+    };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(Menu));
