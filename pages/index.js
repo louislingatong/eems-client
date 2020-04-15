@@ -13,12 +13,8 @@ class Index extends React.Component {
     componentDidMount() {
         const { auth } = this.props;
 
-        if (auth) {
-            if (auth.isAuthenticated) {
-                Router.replace('/dashboard');
-            } else {
-                Router.replace('/login');
-            }
+        if (auth.isAuthenticated) {
+            Router.replace('/dashboard');
         } else {
             Router.replace('/login');
         }

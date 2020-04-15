@@ -5,12 +5,14 @@ import {
     AUTH_LOGOUT,
     AUTH_REFRESH_TOKEN,
     AUTH_RESET_PASSWORD,
+    AUTH_USER,
 } from '../action-types/authActionTypes';
 
 import { setCookie, removeCookie, getCookie } from '../../utils/Cookie';
 
 const initialState = {
     isAuthenticated: false,
+    me: null,
 };
 
 const authReducer = (state = initialState, {type, payload = null}) => {
@@ -24,6 +26,8 @@ const authReducer = (state = initialState, {type, payload = null}) => {
         return logout(state);
     case AUTH_RESET_PASSWORD:
         return resetPassword(state, payload);
+    case AUTH_USER:
+        return setUser(state, payload);
     default:
         return state;
     }
@@ -68,6 +72,11 @@ function resetPassword(state) {
     };
 }
 
-export const getAuth = state => state.auth.isAuthenticated;
+function setUser(state, payload) {
+    return {
+        ...state,
+        me: payload.data,
+    };
+}
 
 export default authReducer;

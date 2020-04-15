@@ -9,8 +9,8 @@ import Email from '@material-ui/icons/Email';
 // styles
 import styles from '../../../assets/jss/styles/layouts/loginStyle.js';
 // components
-import CustomInput from '../../../components/custom-input/CustomInput';
-import CustomButton from '../../../components/custom-button/CustomButton';
+import CustomInput from '../../custom-input/CustomInput';
+import CustomButton from '../../custom-button/CustomButton';
 
 class Form extends React.Component {
     render() {

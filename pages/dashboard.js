@@ -14,14 +14,10 @@ class Dashboard extends React.Component {
     componentDidMount() {
         const { auth } = this.props;
 
-        if (auth) {
-            if (auth.isAuthenticated) {
-                Router.push('/dashboard');
-            } else {
-                Router.push('/login');
-            }
+        if (auth.isAuthenticated) {
+            Router.push('/dashboard');
         } else {
-            Router.replace('/login');
+            Router.push('/login');
         }
     }
 

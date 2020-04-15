@@ -6,9 +6,9 @@ import styles from '../../assets/jss/styles/layouts/adminStyle.js';
 import PerfectScrollbar from 'perfect-scrollbar';
 import '../../scss/styles.scss';
 // components
-import Header from './components/header';
-import Footer from './components/footer';
-import Sidebar from './components/sidebar';
+import Header from '../../components/layouts/admin/header/Header';
+import Footer from '../../components/layouts/admin/footer/Footer';
+import Sidebar from '../../components/layouts/admin/sidebar/Sidebar';
 
 const mainPanel = React.createRef();
 let ps;

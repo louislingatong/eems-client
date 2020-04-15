@@ -4,7 +4,7 @@ import LoginLayout from './LoginLayout';
 
 const mapStateToProps = state => {
     return {
-        isAuthenticated: state.auth.isAuthenticated,
+        auth: state.auth,
         app: state.app
     };
 };

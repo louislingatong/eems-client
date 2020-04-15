@@ -1,6 +1,6 @@
 import axios from 'axios';
-// import { initStore } from '../redux';
-// import { authLogout } from '../redux/actions/authActions';
+// import { initStore } from '../store';
+// import { authLogout } from '../store/actions/authActions';
 
 // create new instance
 const Http = axios.create();

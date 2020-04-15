@@ -23,7 +23,6 @@ class SidebarLinks extends React.Component {
         this.handleActiveRoute = this.handleActiveRoute.bind(this);
     }
 
-
     handleClick(e, action, route) {
         e.preventDefault();
 
