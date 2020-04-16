@@ -13,7 +13,8 @@ import Sidebar from '../../components/layouts/admin/sidebar/Sidebar';
 const mainPanel = React.createRef();
 let ps;
 
-class Page extends React.Component {
+class Layout extends React.Component {
+
     constructor(props) {
         super(props);
 
@@ -88,4 +89,4 @@ class Page extends React.Component {
     }
 }
 
-export default withStyles(styles)(Page);
+export default withStyles(styles)(Layout);

@@ -1,5 +1,5 @@
 import { getCookie } from '../utils/cookie';
-import { authCheck, authLogin } from '../store/actions/authActions';
+import { authLogin, authCheck, authUser } from '../store/actions/authActions';
 import { me } from '../services/authService';
 
 export default async function(ctx) {
@@ -11,9 +11,12 @@ export default async function(ctx) {
     } else {
         const { auth } = ctx.store.getState();
 
-        if (!auth.isAuthenticated && !auth.me) {
+        if (!auth.isAuthenticated && ctx.pathname !== '/login' && ctx.pathname !== '/reset-password') {
             ctx.store.dispatch(await authCheck());
-            ctx.store.dispatch(await me());
+
+            me().then((data) => {
+                ctx.store.dispatch(authUser(data));
+            });
         }
     }
 

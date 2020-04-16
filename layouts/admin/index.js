@@ -1,12 +1,12 @@
 import { connect } from 'react-redux';
+// actions
 
-import AdminLayout from './AdminLayout';
+import Layout from './Layout';
 
 const mapStateToProps = state => {
     return {
-        auth: state.auth,
         app: state.app
     };
 };
 
-export default connect(mapStateToProps)(AdminLayout);
+export default connect(mapStateToProps)(Layout);
