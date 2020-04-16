@@ -7,10 +7,10 @@ import Icon from '@material-ui/core/Icon';
 // @material-ui/icons
 import Email from '@material-ui/icons/Email';
 // styles
-import styles from '../../../assets/jss/styles/layouts/loginStyle.js';
+import styles from '../../assets/jss/styles/layouts/loginStyle.js';
 // components
-import CustomInput from '../../custom-input/CustomInput';
-import CustomButton from '../../custom-button/CustomButton';
+import CustomInput from '../custom-input/CustomInput';
+import CustomButton from '../custom-button/CustomButton';
 
 class Form extends React.Component {
     render() {
@@ -45,7 +45,7 @@ class Form extends React.Component {
                 />
                 <CustomInput
                     labelText="Password"
-                    id="pass"
+                    id="password"
                     formControlProps={{
                         fullWidth: true,
                         error: typeof passwordError === 'string'
@@ -89,7 +89,8 @@ class Form extends React.Component {
 Form.propTypes = {
     handleOnChange: PropTypes.func.isRequired,
     handleOnSubmit: PropTypes.func.isRequired,
-    usernameError: PropTypes.string
+    usernameError: PropTypes.string,
+    passwordError: PropTypes.string
 };
 
 export default withStyles(styles)(Form);

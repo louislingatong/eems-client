@@ -16,6 +16,8 @@ class Login extends React.Component {
 
         if (auth.isAuthenticated) {
             Router.push('/dashboard');
+        } else {
+            Router.push('/login');
         }
     }
 

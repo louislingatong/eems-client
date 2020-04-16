@@ -21,6 +21,8 @@ import styles from '../../../../assets/jss/styles/layouts/components/sub-menu/su
 import CustomButton from '../../../custom-button/CustomButton';
 // services
 import { logout } from '../../../../services/authService';
+// actions
+import { authLogout } from '../../../../store/actions/authActions';
 
 class Menu extends React.Component {
 
@@ -39,6 +41,7 @@ class Menu extends React.Component {
         this.handleClickNotification = this.handleClickNotification.bind(this);
         this.handleCloseNotification = this.handleCloseNotification.bind(this);
         this.handleRedirect = this.handleRedirect.bind(this);
+        this.handleLogout = this.handleLogout.bind(this);
     }
 
     componentDidMount() {
@@ -116,8 +119,16 @@ class Menu extends React.Component {
         Router.push(route);
     }
 
+    handleLogout(e) {
+        e.preventDefault();
+        logout().then(() => {
+            this.props.logout();
+            Router.push('/login');
+        });
+    }
+
     render() {
-        const { classes, auth, onLogout } = this.props;
+        const { classes, auth } = this.props;
         const { openProfile, openNotification, isMobile } = this.state;
         return (
             <div>
@@ -126,7 +137,7 @@ class Menu extends React.Component {
                         color={isMobile ? 'white' : 'transparent'}
                         justIcon={!isMobile}
                         simple={isMobile}
-                        aria-owns={openNotification ? null : 'profile-sub-sub-menu-list-grow'}
+                        aria-owns={openNotification ? null : 'notification-menu-list-grow'}
                         aria-haspopup="true"
                         onClick={(e) => this.handleClickNotification(e)}
                         className={classes.buttonLink}
@@ -151,7 +162,7 @@ class Menu extends React.Component {
                         {({ TransitionProps, placement }) => (
                             <Grow
                                 {...TransitionProps}
-                                id="profile-menu-list-grow"
+                                id="notification-menu-list-grow"
                                 style={{
                                     transformOrigin:
                                         placement === 'bottom' ? 'center top' : 'center bottom'
@@ -178,7 +189,7 @@ class Menu extends React.Component {
                         color={isMobile ? 'white' : 'transparent'}
                         justIcon={!isMobile}
                         simple={isMobile}
-                        aria-owns={openProfile ? null : 'profile-sub-sub-menu-list-grow'}
+                        aria-owns={openProfile ? null : 'account-menu-list-grow'}
                         aria-haspopup="true"
                         onClick={(e) => this.handleClickProfile(e)}
                         className={classes.buttonLink}
@@ -202,7 +213,7 @@ class Menu extends React.Component {
                         {({ TransitionProps, placement }) => (
                             <Grow
                                 {...TransitionProps}
-                                id="profile-menu-list-grow"
+                                id="account-menu-list-grow"
                                 style={{
                                     transformOrigin:
                                         placement === 'bottom' ? 'center top' : 'center bottom'
@@ -219,7 +230,7 @@ class Menu extends React.Component {
                                             </MenuItem>
                                             <Divider light />
                                             <MenuItem
-                                                onClick={onLogout}
+                                                onClick={(e) => this.handleLogout(e)}
                                                 className={classes.dropdownItem}
                                             >
                                                 Logout
@@ -244,8 +255,8 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
     return {
-        onLogout: () => {
-            dispatch(logout());
+        logout: () => {
+            dispatch(authLogout());
         }
     };
 };

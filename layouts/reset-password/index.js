@@ -1,23 +1,21 @@
 import { connect } from 'react-redux';
 // actions
-import { authLogin, authUser } from '../../store/actions/authActions';
+import { authResetPasswordToken } from '../../store/actions/authActions';
 
 import Layout from './Layout';
 
 const mapStateToProps = state => {
     return {
-        app: state.app
+        app: state.app,
+        token: state.auth.resetPasswordToken
     };
 };
 
 const mapDispatchToProps = dispatch => {
     return {
-        login: (data) => {
-            dispatch(authLogin(data));
+        unsetResetPasswordToken: (data) => {
+            dispatch(authResetPasswordToken(data));
         },
-        setUser: (data) => {
-            dispatch(authUser(data));
-        }
     };
 };
 

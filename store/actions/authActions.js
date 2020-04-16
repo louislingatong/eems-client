@@ -11,7 +11,7 @@ import {
     AUTH_LOGIN,
     AUTH_LOGOUT,
     AUTH_REFRESH_TOKEN,
-    AUTH_RESET_PASSWORD,
+    AUTH_RESET_PASSWORD_TOKEN,
     AUTH_USER,
 } from '../action-types/authActionTypes';
 
@@ -49,10 +49,11 @@ export function authRefreshToken(payload) {
     };
 }
 
-export function authResetPassword() {
+export function authResetPasswordToken(payload) {
     return (dispatch) => {
         dispatch({
-            type: AUTH_RESET_PASSWORD,
+            type: AUTH_RESET_PASSWORD_TOKEN,
+            payload: payload,
         });
     };
 }
