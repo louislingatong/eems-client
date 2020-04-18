@@ -1,33 +1,29 @@
-import React from 'react';
-import Router from 'next/router';
-import AdminLayout from '../layouts/admin';
-import initialize from '../utils/Initialize';
-
 import '../scss/styles.scss';
 
-class Dashboard extends React.Component {
+import React, { useEffect } from 'react';
+import Router from 'next/router';
+import AdminLayout from '../layouts/AdminLayout';
 
-    static getInitialProps(ctx) {
-        return initialize(ctx);
-    }
+import initialize from '../utils/Initialize';
 
-    componentDidMount() {
-        const { auth } = this.props;
+const Dashboard = props => {
+    useEffect(() => {
+        const { auth } = props;
 
-        if (auth.isAuthenticated) {
-            Router.push('/dashboard');
-        } else {
-            Router.push('/login');
+        if (!auth.isAuthenticated) {
+            Router.replace('/login');
         }
-    }
+    });
 
-    render() {
-        return (
-            <React.Fragment>
-                <AdminLayout />
-            </React.Fragment>
-        );
-    }
-}
+    return (
+        <React.Fragment>
+            <AdminLayout />
+        </React.Fragment>
+    );
+};
+
+Dashboard.getInitialProps = (ctx) => {
+    return initialize(ctx);
+};
 
 export default Dashboard;

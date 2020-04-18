@@ -1,35 +1,34 @@
-import React from 'react';
-import { connect } from 'react-redux';
-import { withRouter } from 'next/router';
-import initialize from '../../../utils/Initialize';
-import { authResetPasswordToken } from '../../../store/actions/authActions';
-
 import '../../../scss/styles.scss';
 
-class ResetPasswordToken extends React.Component {
+import React, { useEffect } from 'react';
+import { connect } from 'react-redux';
+import { useRouter } from 'next/router';
+// actions
+import { authResetPasswordToken } from '../../../store/actions/authActions';
 
-    static async getInitialProps(ctx) {
-        return initialize(ctx);
-    }
+import initialize from '../../../utils/Initialize';
 
-    componentDidMount() {
-        const { auth, router, setResetPasswordToken } = this.props;
+const ResetPasswordToken = props => {
+    const router = useRouter();
+
+    useEffect(() => {
+        const { auth } = props;
 
         if (auth.isAuthenticated) {
             router.push('/dashboard');
         } else {
             const { token } = router.query;
-            setResetPasswordToken(token);
+            props.setResetPasswordToken(token);
             router.replace('/reset-password');
         }
-    }
+    });
 
-    render() {
-        return (
-            <React.Fragment />
-        );
-    }
-}
+    return <React.Fragment />;
+};
+
+ResetPasswordToken.getInitialProps = (ctx) => {
+    return initialize(ctx);
+};
 
 const mapDispatchToProps = dispatch => {
     return {
@@ -39,4 +38,4 @@ const mapDispatchToProps = dispatch => {
     };
 };
 
-export default connect(null, mapDispatchToProps)(withRouter(ResetPasswordToken));
+export default connect(null, mapDispatchToProps)(ResetPasswordToken);

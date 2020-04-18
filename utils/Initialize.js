@@ -1,11 +1,11 @@
-import { getCookie } from '../utils/cookie';
+import * as cookie from './cookie';
 import { authLogin, authCheck, authUser } from '../store/actions/authActions';
 import { me } from '../services/authService';
 
 export default async function(ctx) {
     if(ctx.isServer) {
         if (ctx.req.headers.cookie) {
-            const token = getCookie('token', ctx.req);
+            const token = cookie.get('token', ctx.req);
             ctx.store.dispatch(await authLogin(token));
         }
     } else {

@@ -1,28 +1,26 @@
-import React from 'react';
-import Router from 'next/router';
-import initialize from '../utils/Initialize';
-
 import '../scss/styles.scss';
 
-class Index extends React.Component {
+import React, { useEffect } from 'react';
+import Router from 'next/router';
 
-    static getInitialProps(ctx) {
-        return initialize(ctx);
-    }
+import initialize from '../utils/Initialize';
 
-    componentDidMount() {
-        const { auth } = this.props;
+const Index = props => {
+    useEffect(() => {
+        const { auth } = props;
 
         if (auth.isAuthenticated) {
             Router.replace('/dashboard');
         } else {
             Router.replace('/login');
         }
-    }
+    });
 
-    render() {
-        return <React.Fragment />;
-    }
-}
+    return <React.Fragment />;
+};
+
+Index.getInitialProps = (ctx) => {
+    return initialize(ctx);
+};
 
 export default Index;

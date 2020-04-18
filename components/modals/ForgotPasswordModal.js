@@ -1,8 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 // @material-ui/core components
-import { withStyles } from '@material-ui/core/styles';
-import styles from '../../assets/jss/styles/components/forgot-password-modal/forgotPasswordModalStyle';
+import { makeStyles } from '@material-ui/core/styles';
 import Dialog from '@material-ui/core/Dialog';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import DialogContent from '@material-ui/core/DialogContent';
@@ -14,32 +13,28 @@ import InputAdornment from '@material-ui/core/InputAdornment';
 import Close from '@material-ui/icons/Close';
 import Email from '@material-ui/icons/Email';
 // components
-import CustomInput from '../custom-input/CustomInput';
-import CustomButton from '../custom-button/CustomButton';
+import CustomInput from '../custom-input/Input';
+import CustomButton from '../custom-button/Button';
 // services
 import { forgotPassword } from '../../services/authService';
+//styles
+import styles from '../../assets/jss/styles/components/forgot-password-modal/forgotPasswordModalStyle';
+
+const useStyles = makeStyles(styles);
 
 const Transition = React.forwardRef(function Transition(props, ref) {
     return <Fade ref={ref} {...props} />;
 });
 
-class ForgotPasswordModal extends React.Component {
+const ForgotPasswordModal = props => {
+    const { isOpen } = props;
+    const classes = useStyles();
 
-    constructor(props) {
-        super(props);
+    const [email, setEmail] = React.useState('');
+    const [emailError, setEmailError] = React.useState();
 
-        this.state = {
-            email: '',
-            emailError: null,
-        };
 
-        this.validateEmail = this.validateEmail.bind(this);
-        this.handleOnCloseModal = this.handleOnCloseModal.bind(this);
-        this.handleOnFPSubmit = this.handleOnFPSubmit.bind(this);
-        this.validateFPSubmit = this.validateFPSubmit.bind(this);
-    }
-
-    validateEmail(value) {
+    const validateEmail = (value) => {
         let emailError;
 
         if (value === '') {
@@ -50,144 +45,123 @@ class ForgotPasswordModal extends React.Component {
             emailError = 'Email format is invalid.';
         }
 
-        this.setState({
-            ...this.state,
-            email: value,
-            emailError: emailError
-        });
-    }
+        setEmail(value);
+        setEmailError(emailError);
+    };
 
-    handleOnCloseModal(e) {
+    const handleOnCloseModal = (e) => {
+        e.preventDefault();
+        setEmail('');
+        setEmailError();
+        props.handleFPModalToggle(e);
+    };
+
+    const handleOnFPSubmit = (e) => {
         e.preventDefault();
 
-        this.setState({
-            email: '',
-            emailError: null,
-        });
-
-        return this.props.handleFPModalToggle(e);
-    }
-
-    handleOnFPSubmit(e) {
-        e.preventDefault();
-
-        if (this.validateFPSubmit()) {
-            forgotPassword(this.state.email)
+        if (validateFPSubmit()) {
+            forgotPassword(email)
                 .then(() => {
                     const alertData = {
                         message: 'Password reset link was sent to you email.',
                         color: 'success'
                     };
-                    return this.props.handleFPModalToggle(e, alertData);
+                    return props.handleFPModalToggle(e, alertData);
                 })
                 .catch(() => {
-                    this.setState({
-                        ...this.state,
-                        emailError: 'Email is invalid.',
-                    });
+                    setEmailError('Email is invalid.');
                 });
         }
-    }
+    };
 
-    validateFPSubmit() {
-        const { email } = this.state;
-
+    const validateFPSubmit = () => {
         if (!email) {
-            this.setState({
-                ...this.state,
-                emailError: 'Email is required.'
-            });
+            setEmailError('Email is required.');
             return false;
         }
-
         return true;
-    }
+    };
 
-    render() {
-        const { classes, isOpen } = this.props;
-        const { email, emailError } = this.state;
-
-        return (
-            <Dialog
-                classes={{
-                    root: classes.center,
-                    paper: classes.modal
-                }}
-                open={isOpen}
-                TransitionComponent={Transition}
-                keepMounted
-                onClose={(e) => this.handleOnCloseModal(e)}
-                aria-labelledby='forgot-password-modal-slide-title'
-                aria-describedby='forgot-password-modal-slide-description'
+    return (
+        <Dialog
+            classes={{
+                root: classes.center,
+                paper: classes.modal
+            }}
+            open={isOpen}
+            TransitionComponent={Transition}
+            keepMounted
+            onClose={(e) => handleOnCloseModal(e)}
+            aria-labelledby='forgot-password-modal-slide-title'
+            aria-describedby='forgot-password-modal-slide-description'
+        >
+            <DialogTitle
+                id='forgot-password-modal-slide-title'
+                disableTypography
+                className={classes.modalHeader}
             >
-                <DialogTitle
-                    id='forgot-password-modal-slide-title'
-                    disableTypography
-                    className={classes.modalHeader}
+                <IconButton
+                    className={classes.modalCloseButton}
+                    key='close'
+                    aria-label='Close'
+                    color='inherit'
+                    onClick={(e) => handleOnCloseModal(e)}
                 >
-                    <IconButton
-                        className={classes.modalCloseButton}
-                        key='close'
-                        aria-label='Close'
-                        color='inherit'
-                        onClick={(e) => this.handleOnCloseModal(e)}
-                    >
-                        <Close className={classes.modalClose} />
-                    </IconButton>
-                    <h4 className={classes.modalTitle}>Forgot Password</h4>
-                </DialogTitle>
-                <DialogContent
-                    id='forgot-password-modal-slide-description'
-                    className={classes.modalBody}
+                    <Close className={classes.modalClose} />
+                </IconButton>
+                <h4 className={classes.modalTitle}>Forgot Password</h4>
+            </DialogTitle>
+            <DialogContent
+                id='forgot-password-modal-slide-description'
+                className={classes.modalBody}
+            >
+                <CustomInput
+                    labelText="Email"
+                    id="email"
+                    formControlProps={{
+                        fullWidth: true,
+                        error: typeof emailError === 'string'
+                    }}
+                    inputProps={{
+                        type: 'email',
+                        endAdornment: (
+                            <InputAdornment position="end">
+                                <Email
+                                    className={
+                                        emailError
+                                            ? classes.inputIconsColorDanger
+                                            : classes.inputIconsColor
+                                    }
+                                />
+                            </InputAdornment>
+                        ),
+                        name: 'email',
+                        value: email,
+                        onChange: (e) => validateEmail(e.target.value)
+                    }}
+                    error={typeof emailError === 'string'}
+                    helperText={emailError}
+                />
+            </DialogContent>
+            <DialogActions className={classes.modalFooter}>
+                <CustomButton
+                    variant="contained"
+                    color="primary"
+                    block={true}
+                    className={classes.submit}
+                    type="button"
+                    onClick={(e) => handleOnFPSubmit(e)}
                 >
-                    <CustomInput
-                        labelText="Email"
-                        id="email"
-                        formControlProps={{
-                            fullWidth: true,
-                            error: typeof emailError === 'string'
-                        }}
-                        inputProps={{
-                            type: 'email',
-                            endAdornment: (
-                                <InputAdornment position="end">
-                                    <Email
-                                        className={
-                                            emailError
-                                                ? classes.inputIconsColorDanger
-                                                : classes.inputIconsColor
-                                        }
-                                    />
-                                </InputAdornment>
-                            ),
-                            name: 'email',
-                            value: email,
-                            onChange: (e) => this.validateEmail(e.target.value)
-                        }}
-                        error={typeof emailError === 'string'}
-                        helperText={emailError}
-                    />
-                </DialogContent>
-                <DialogActions className={classes.modalFooter}>
-                    <CustomButton
-                        variant="contained"
-                        color="primary"
-                        block={true}
-                        className={classes.submit}
-                        type="button"
-                        onClick={(e) => this.handleOnFPSubmit(e)}
-                    >
-                        Submit
-                    </CustomButton>
-                </DialogActions>
-            </Dialog>
-        );
-    }
-}
+                    Submit
+                </CustomButton>
+            </DialogActions>
+        </Dialog>
+    );
+};
 
 ForgotPasswordModal.propTypes = {
     isOpen: PropTypes.bool,
     handleFPModalToggle: PropTypes.func,
 };
 
-export default withStyles(styles)(ForgotPasswordModal);
+export default ForgotPasswordModal;

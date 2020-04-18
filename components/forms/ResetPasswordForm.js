@@ -1,103 +1,101 @@
-import React from 'react';
 import PropTypes from 'prop-types';
 // @material-ui/core components
-import { withStyles } from '@material-ui/core/styles';
-import InputAdornment from '@material-ui/core/InputAdornment';
-import Icon from '@material-ui/core/Icon';
-// @material-ui/icons
-// styles
-import styles from '../../assets/jss/styles/layouts/resetPasswordStyle.js';
+import { makeStyles } from '@material-ui/core/styles';
+import MatInputAdornment from '@material-ui/core/InputAdornment';
+import MatIcon from '@material-ui/core/Icon';
 // components
-import CustomInput from '../custom-input/CustomInput';
-import CustomButton from '../custom-button/CustomButton';
+import Input from '../custom-input/Input';
+import Button from '../custom-button/Button';
+// styles
+import styles from '../../assets/jss/styles/resetPasswordStyle.js';
 
-class Form extends React.Component {
-    render() {
-        const {
-            classes,
-            handleOnChange,
-            handleOnSubmit,
-            password,
-            confirmPassword,
-            passwordError,
-            confirmPasswordError
-        } = this.props;
+const useStyles = makeStyles(styles);
 
-        return (
-            <form className={classes.form} onSubmit={(e) => handleOnSubmit(e)} noValidate>
-                <CustomInput
-                    labelText="Password"
-                    id="password"
-                    formControlProps={{
-                        fullWidth: true,
-                        error: typeof passwordError === 'string'
-                    }}
-                    inputProps={{
-                        type: 'password',
-                        endAdornment: (
-                            <InputAdornment position="end">
-                                <Icon
-                                    className={
-                                        passwordError
-                                            ? classes.inputIconsColorDanger
-                                            : classes.inputIconsColor
-                                    }
-                                >
-                                    lock_outline
-                                </Icon>
-                            </InputAdornment>
-                        ),
-                        autoComplete: 'off',
-                        name: 'password',
-                        onChange: (e) => handleOnChange('password', e.target.value),
-                        value: password
-                    }}
-                    error={typeof passwordError === 'string'}
-                    helperText={passwordError}
-                />
-                <CustomInput
-                    labelText="Confirm Password"
-                    id="confirmPassword"
-                    formControlProps={{
-                        fullWidth: true,
-                        error: typeof confirmPasswordError === 'string'
-                    }}
-                    inputProps={{
-                        type: 'password',
-                        endAdornment: (
-                            <InputAdornment position="end">
-                                <Icon
-                                    className={
-                                        confirmPasswordError
-                                            ? classes.inputIconsColorDanger
-                                            : classes.inputIconsColor
-                                    }
-                                >
-                                    lock_outline
-                                </Icon>
-                            </InputAdornment>
-                        ),
-                        autoComplete: 'off',
-                        name: 'confirmPassword',
-                        onChange: (e) => handleOnChange('confirmPassword', e.target.value),
-                        value: confirmPassword
-                    }}
-                    error={typeof confirmPasswordError === 'string'}
-                    helperText={confirmPasswordError}
-                />
-                <CustomButton
-                    variant="contained"
-                    color="primary"
-                    block={true}
-                    className={classes.submitButton}
-                    type="submit"
-                >
-                    Save
-                </CustomButton>
-            </form>
-        );
-    }
-}
+const Form = props => {
+    const {
+        handleOnChange,
+        handleOnSubmit,
+        password,
+        confirmPassword,
+        passwordError,
+        confirmPasswordError
+    } = props;
+    const classes = useStyles();
+
+    return (
+        <form className={classes.form} onSubmit={(e) => handleOnSubmit(e)} noValidate>
+            <Input
+                labelText="Password"
+                id="password"
+                formControlProps={{
+                    fullWidth: true,
+                    error: typeof passwordError === 'string'
+                }}
+                inputProps={{
+                    type: 'password',
+                    endAdornment: (
+                        <MatInputAdornment position="end">
+                            <MatIcon
+                                className={
+                                    passwordError
+                                        ? classes.inputIconsColorDanger
+                                        : classes.inputIconsColor
+                                }
+                            >
+                                lock_outline
+                            </MatIcon>
+                        </MatInputAdornment>
+                    ),
+                    autoComplete: 'off',
+                    name: 'password',
+                    onChange: (e) => handleOnChange('password', e.target.value),
+                    value: password
+                }}
+                error={typeof passwordError === 'string'}
+                helperText={passwordError}
+            />
+            <Input
+                labelText="Confirm Password"
+                id="confirmPassword"
+                formControlProps={{
+                    fullWidth: true,
+                    error: typeof confirmPasswordError === 'string'
+                }}
+                inputProps={{
+                    type: 'password',
+                    endAdornment: (
+                        <MatInputAdornment position="end">
+                            <MatIcon
+                                className={
+                                    confirmPasswordError
+                                        ? classes.inputIconsColorDanger
+                                        : classes.inputIconsColor
+                                }
+                            >
+                                lock_outline
+                            </MatIcon>
+                        </MatInputAdornment>
+                    ),
+                    autoComplete: 'off',
+                    name: 'confirmPassword',
+                    onChange: (e) => handleOnChange('confirmPassword', e.target.value),
+                    value: confirmPassword
+                }}
+                error={typeof confirmPasswordError === 'string'}
+                helperText={confirmPasswordError}
+            />
+            <Button
+                variant="contained"
+                color="primary"
+                block={true}
+                className={classes.submitButton}
+                type="submit"
+            >
+                Save
+            </Button>
+        </form>
+    );
+};
 
 Form.propTypes = {
     handleOnChange: PropTypes.func.isRequired,
@@ -108,4 +106,4 @@ Form.propTypes = {
     confirmPasswordError: PropTypes.string,
 };
 
-export default withStyles(styles)(Form);
+export default Form;

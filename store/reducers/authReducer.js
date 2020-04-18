@@ -8,7 +8,7 @@ import {
     AUTH_USER,
 } from '../action-types/authActionTypes';
 
-import { setCookie, removeCookie, getCookie } from '../../utils/Cookie';
+import * as cookie from '../../utils/cookie';
 
 const initialState = {
     isAuthenticated: false,
@@ -35,7 +35,7 @@ const authReducer = (state = initialState, {type, payload = null}) => {
 };
 
 function login(state, payload) {
-    setCookie('token', payload);
+    cookie.set('token', payload);
     HTTP.defaults.headers.common['Authorization'] = `Bearer ${payload}`;
 
     return {
@@ -45,10 +45,10 @@ function login(state, payload) {
 }
 
 function checkAuth(state) {
-    const isAuthenticated = !!getCookie('token');
+    const isAuthenticated = !!cookie.get('token');
 
     if (isAuthenticated) {
-        HTTP.defaults.headers.common['Authorization'] = `Bearer ${getCookie('token')}`;
+        HTTP.defaults.headers.common['Authorization'] = `Bearer ${cookie.get('token')}`;
     }
 
     return {
@@ -58,7 +58,7 @@ function checkAuth(state) {
 }
 
 function logout(state) {
-    removeCookie('token');
+    cookie.remove('token');
 
     return {
         ...state,
