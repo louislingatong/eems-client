@@ -1,81 +1,65 @@
-import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
-import Router from 'next/router';
+import { useRouter } from 'next/router';
 // @material-ui/core components
-import { withStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import Icon from '@material-ui/core/Icon';
-// @material-ui/icons
 // styles
 import styles from '../../../../assets/jss/styles/layouts/components/sidebar/sidebarStyle.js';
-// services
-import { logout } from '../../../../services/authService';
 
-class SidebarLinks extends React.Component {
+const useStyles = makeStyles(styles);
 
-    constructor(props) {
-        super(props);
+const SidebarLinks = props => {
+    const { color } = props;
+    const classes = useStyles();
+    const router = useRouter();
 
-        this.handleClick = this.handleClick.bind(this);
-        this.handleActiveRoute = this.handleActiveRoute.bind(this);
-    }
-
-    handleClick(e, action, route) {
+    const handleClick = (e, action, route) => {
         e.preventDefault();
+        router.push(route);
+    };
 
-        if (action === 'logout') {
-            this.props.dispatch(logout());
-        } else if (action === 'redirect' && route) {
-            Router.push(route);
-        }
-    }
-
-    handleActiveRoute(e, route) {
+    const handleActiveRoute = (e, route) => {
         e.preventDefault();
+        return router.pathname === route;
+    };
 
-        return window.location.href.indexOf(route) > -1 ? true : false;
-    }
-
-    render() {
-        const { classes, color } = this.props;
-
-        return (
-            <React.Fragment>
-                <List className={classes.list}>
-                    <ListItem
-                        button
-                        className={classes.itemLink + classNames({
-                            [' ' + classes[color]]: (e) => this.handleActiveRoute(e, '/dashboard')
-                        })}
-                        onClick={(e) => this.handleClick(e, 'redirect', '/dashboard')}
-                    >
-                        <Icon className={classNames(
-                            classes.itemIcon,
+    return (
+        <React.Fragment>
+            <List className={classes.list}>
+                <ListItem
+                    button
+                    className={classes.itemLink + classNames({
+                        [' ' + classes[color]]: (e) => handleActiveRoute(e, '/dashboard')
+                    })}
+                    onClick={(e) => handleClick(e, '/dashboard')}
+                >
+                    <Icon className={classNames(
+                        classes.itemIcon,
+                        classNames({
+                            [' ' + classes.whiteFont]: (e) => handleActiveRoute(e, '/dashboard')
+                        })
+                    )}>
+                        dashboard
+                    </Icon>
+                    <ListItemText
+                        primary="Dashboard"
+                        className={classNames(
+                            classes.itemText,
                             classNames({
-                                [' ' + classes.whiteFont]: (e) => this.handleActiveRoute(e, '/dashboard')
+                                [' ' + classes.whiteFont]: (e) => handleActiveRoute(e, '/dashboard')
                             })
-                        )}>
-                            dashboard
-                        </Icon>
-                        <ListItemText
-                            primary="Dashboard"
-                            className={classNames(
-                                classes.itemText,
-                                classNames({
-                                    [' ' + classes.whiteFont]: (e) => this.handleActiveRoute(e, '/dashboard')
-                                })
-                            )}
-                            disableTypography={true}
-                        />
-                    </ListItem>
-                </List>
-            </React.Fragment>
-        );
-    }
-}
+                        )}
+                        disableTypography={true}
+                    />
+                </ListItem>
+            </List>
+        </React.Fragment>
+    );
+};
 
 SidebarLinks.propTypes = {
     color: PropTypes.oneOf([
@@ -87,4 +71,4 @@ SidebarLinks.propTypes = {
     ])
 };
 
-export default withStyles(styles)(SidebarLinks);
+export default SidebarLinks;

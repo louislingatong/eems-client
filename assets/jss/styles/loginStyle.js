@@ -1,9 +1,9 @@
 import {
     grayColor,
     dangerColor,
-} from '../../material-dashboard-react.js';
+} from '../material-dashboard-react.js';
 
-const resetPasswordStyle = () => ({
+const loginStyle = () => ({
     wrapper: {
         zIndex: '2',
         position: 'relative',
@@ -49,10 +49,10 @@ const resetPasswordStyle = () => ({
     inputIconsColorDanger: {
         color: dangerColor[0]
     },
-    submitButton: {
+    loginButton: {
         marginTop: '20px',
         marginBottom: '0px',
     },
 });
 
-export default resetPasswordStyle;
+export default loginStyle;

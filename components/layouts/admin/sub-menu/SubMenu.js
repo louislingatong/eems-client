@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import classNames from 'classnames';
 import Router from 'next/router';
 // @material-ui/core components
-import { withStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles';
+import styles from '../../../../assets/jss/styles/layouts/components/sub-menu/subMenuStyle.js';
 import Hidden from '@material-ui/core/Hidden';
 import Popper from '@material-ui/core/Popper';
 import Grow from '@material-ui/core/Grow';
@@ -15,237 +16,199 @@ import Divider from '@material-ui/core/Divider';
 // @material-ui/icons
 import AccountBox from '@material-ui/icons/AccountBox';
 import Notifications from '@material-ui/icons/Notifications';
-// styles
-import styles from '../../../../assets/jss/styles/layouts/components/sub-menu/subMenuStyle.js';
 // components
-import CustomButton from '../../../custom-button/CustomButton';
+import CustomButton from '../../../custom-button/Button';
 // services
 import { logout } from '../../../../services/authService';
 // actions
 import { authLogout } from '../../../../store/actions/authActions';
 
-class Menu extends React.Component {
+const useStyles = makeStyles(styles);
 
-    constructor(props) {
-        super(props);
+const Menu = props => {
+    const { auth } = props;
+    const classes = useStyles();
 
-        this.state = {
-            isMobile: false,
-            openProfile: null,
-            openNotification: null
-        };
+    const [mobile, setMobile] = React.useState(false);
+    const [profileOpen, setProfileOpen] = React.useState();
+    const [notificationOpen, setNotificationOpen] = React.useState();
 
-        this.handleWindowResize = this.handleWindowResize.bind(this);
-        this.handleClickProfile = this.handleClickProfile.bind(this);
-        this.handleCloseProfile = this.handleCloseProfile.bind(this);
-        this.handleClickNotification = this.handleClickNotification.bind(this);
-        this.handleCloseNotification = this.handleCloseNotification.bind(this);
-        this.handleRedirect = this.handleRedirect.bind(this);
-        this.handleLogout = this.handleLogout.bind(this);
-    }
-
-    componentDidMount() {
+    useEffect(() => {
         if (window.innerWidth <= 960) {
-            this.setState({
-                isMobile: true
-            });
+            setMobile(true);
         }
 
-        window.addEventListener('resize', this.handleWindowResize);
-    }
+        window.addEventListener('resize', handleWindowResize);
+        window.removeEventListener('resize', handleWindowResize);
+    }, [mobile]);
 
-    componentWillUnmount() {
-        window.removeEventListener('resize', this.handleWindowResize);
-    }
-
-    handleWindowResize() {
+    const handleWindowResize = () => {
         if (window.innerWidth <= 960) {
-            this.setState({
-                isMobile: true
-            });
+            setMobile(true);
         } else {
-            this.setState({
-                isMobile: false
-            });
+            setMobile(false);
         }
-    }
+    };
 
-    handleClickProfile(e) {
+    const handleClickProfile = (e) => {
         e.preventDefault();
-        const { openProfile } = this.state;
 
-        if (openProfile && openProfile.contains(e.target)) {
-            this.setState({
-                openProfile: null
-            });
+        if (profileOpen && profileOpen.contains(e.target)) {
+            setProfileOpen();
         } else {
-            this.setState({
-                openProfile: e.currentTarget
-            });
+            setProfileOpen(e.currentTarget);
         }
-    }
+    };
 
-    handleCloseProfile(e) {
+    const handleCloseProfile = (e) => {
         e.preventDefault();
-        this.setState({
-            openProfile: null
-        });
-    }
+        setProfileOpen();
+    };
 
-    handleClickNotification(e) {
+    const handleClickNotification = (e) => {
         e.preventDefault();
-        const { openNotification } = this.state;
 
-        if (openNotification && openNotification.contains(e.target)) {
-            this.setState({
-                openNotification: null
-            });
+        if (notificationOpen && notificationOpen.contains(e.target)) {
+            setNotificationOpen();
         } else {
-            this.setState({
-                openNotification: e.currentTarget
-            });
+            setNotificationOpen(e.currentTarget);
         }
-    }
+    };
 
-    handleCloseNotification(e) {
+    const handleCloseNotification = (e) => {
         e.preventDefault();
-        this.setState({
-            openNotification: null
-        });
-    }
+        setNotificationOpen();
+    };
 
-    handleRedirect(e, route) {
+    const handleRedirect = (e, route) => {
         e.preventDefault();
         Router.push(route);
-    }
+    };
 
-    handleLogout(e) {
+    const handleLogout = (e) => {
         e.preventDefault();
+
         logout().then(() => {
-            this.props.logout();
+            props.logout();
             Router.push('/login');
         });
-    }
+    };
 
-    render() {
-        const { classes, auth } = this.props;
-        const { openProfile, openNotification, isMobile } = this.state;
-        return (
-            <div>
-                <div className={classes.manager}>
-                    <CustomButton
-                        color={isMobile ? 'white' : 'transparent'}
-                        justIcon={!isMobile}
-                        simple={isMobile}
-                        aria-owns={openNotification ? null : 'notification-menu-list-grow'}
-                        aria-haspopup="true"
-                        onClick={(e) => this.handleClickNotification(e)}
-                        className={classes.buttonLink}
-                    >
-                        <Notifications className={classes.linkIcon} />
-                        <span className={classes.notifications}>1</span>
-                        <Hidden mdUp implementation="css">
-                            <p className={classes.linkText}>Notification</p>
-                        </Hidden>
-                    </CustomButton>
-                    <Popper
-                        open={Boolean(openNotification)}
-                        anchorEl={openNotification}
-                        transition
-                        disablePortal
-                        className={
-                            classNames({ [classes.popperClose]: !openNotification }) +
-                            ' ' +
-                            classes.popperNav
-                        }
-                    >
-                        {({ TransitionProps, placement }) => (
-                            <Grow
-                                {...TransitionProps}
-                                id="notification-menu-list-grow"
-                                style={{
-                                    transformOrigin:
-                                        placement === 'bottom' ? 'center top' : 'center bottom'
-                                }}
-                            >
-                                <Paper>
-                                    <ClickAwayListener onClickAway={(e) => this.handleCloseNotification(e)}>
-                                        <MenuList role="menu">
-                                            <MenuItem
-                                                onClick={(e) => this.handleCloseNotification(e)}
-                                                className={classes.dropdownItem}
-                                            >
-                                                Notification 1
-                                            </MenuItem>
-                                        </MenuList>
-                                    </ClickAwayListener>
-                                </Paper>
-                            </Grow>
-                        )}
-                    </Popper>
-                </div>
-                <div className={classes.manager}>
-                    <CustomButton
-                        color={isMobile ? 'white' : 'transparent'}
-                        justIcon={!isMobile}
-                        simple={isMobile}
-                        aria-owns={openProfile ? null : 'account-menu-list-grow'}
-                        aria-haspopup="true"
-                        onClick={(e) => this.handleClickProfile(e)}
-                        className={classes.buttonLink}
-                    >
-                        <AccountBox className={classes.linkIcon}/>
-                        <Hidden mdUp implementation="css">
-                            <p className={classes.linkText}>{ auth.me ? auth.me.name : ''}</p>
-                        </Hidden>
-                    </CustomButton>
-                    <Popper
-                        open={Boolean(openProfile)}
-                        anchorEl={openProfile}
-                        transition
-                        disablePortal
-                        className={
-                            classNames({ [classes.popperClose]: !openProfile }) +
-                            ' ' +
-                            classes.popperNav
-                        }
-                    >
-                        {({ TransitionProps, placement }) => (
-                            <Grow
-                                {...TransitionProps}
-                                id="account-menu-list-grow"
-                                style={{
-                                    transformOrigin:
-                                        placement === 'bottom' ? 'center top' : 'center bottom'
-                                }}
-                            >
-                                <Paper>
-                                    <ClickAwayListener onClickAway={(e) => this.handleCloseProfile(e)}>
-                                        <MenuList role="menu">
-                                            <MenuItem
-                                                onClick={(e) => this.handleRedirect(e, `/profile/${ auth.me ? auth.me.id : ''}`)}
-                                                className={classes.dropdownItem}
-                                            >
-                                                Profile
-                                            </MenuItem>
-                                            <Divider light />
-                                            <MenuItem
-                                                onClick={(e) => this.handleLogout(e)}
-                                                className={classes.dropdownItem}
-                                            >
-                                                Logout
-                                            </MenuItem>
-                                        </MenuList>
-                                    </ClickAwayListener>
-                                </Paper>
-                            </Grow>
-                        )}
-                    </Popper>
-                </div>
+    return (
+        <div>
+            <div className={classes.manager}>
+                <CustomButton
+                    color={mobile ? 'white' : 'transparent'}
+                    justIcon={!mobile}
+                    simple={mobile}
+                    aria-owns={notificationOpen ? undefined : 'notification-menu-list-grow'}
+                    aria-haspopup="true"
+                    onClick={(e) => handleClickNotification(e)}
+                    className={classes.buttonLink}
+                >
+                    <Notifications className={classes.linkIcon} />
+                    <span className={classes.notifications}>1</span>
+                    <Hidden mdUp implementation="css">
+                        <p className={classes.linkText}>Notification</p>
+                    </Hidden>
+                </CustomButton>
+                <Popper
+                    open={Boolean(notificationOpen)}
+                    anchorEl={notificationOpen}
+                    transition
+                    disablePortal
+                    className={
+                        classNames({ [classes.popperClose]: !notificationOpen }) +
+                        ' ' +
+                        classes.popperNav
+                    }
+                >
+                    {({ TransitionProps, placement }) => (
+                        <Grow
+                            {...TransitionProps}
+                            id="notification-menu-list-grow"
+                            style={{
+                                transformOrigin:
+                                    placement === 'bottom' ? 'center top' : 'center bottom'
+                            }}
+                        >
+                            <Paper>
+                                <ClickAwayListener onClickAway={(e) => handleCloseNotification(e)}>
+                                    <MenuList role="menu">
+                                        <MenuItem
+                                            onClick={(e) => handleCloseNotification(e)}
+                                            className={classes.dropdownItem}
+                                        >
+                                            Notification 1
+                                        </MenuItem>
+                                    </MenuList>
+                                </ClickAwayListener>
+                            </Paper>
+                        </Grow>
+                    )}
+                </Popper>
             </div>
-        );
-    }
-}
+            <div className={classes.manager}>
+                <CustomButton
+                    color={mobile ? 'white' : 'transparent'}
+                    justIcon={!mobile}
+                    simple={mobile}
+                    aria-owns={profileOpen ? undefined : 'account-menu-list-grow'}
+                    aria-haspopup="true"
+                    onClick={(e) => handleClickProfile(e)}
+                    className={classes.buttonLink}
+                >
+                    <AccountBox className={classes.linkIcon}/>
+                    <Hidden mdUp implementation="css">
+                        <p className={classes.linkText}>{ auth.me ? auth.me.name : ''}</p>
+                    </Hidden>
+                </CustomButton>
+                <Popper
+                    open={Boolean(profileOpen)}
+                    anchorEl={profileOpen}
+                    transition
+                    disablePortal
+                    className={
+                        classNames({ [classes.popperClose]: !profileOpen }) +
+                        ' ' +
+                        classes.popperNav
+                    }
+                >
+                    {({ TransitionProps, placement }) => (
+                        <Grow
+                            {...TransitionProps}
+                            id="account-menu-list-grow"
+                            style={{
+                                transformOrigin:
+                                    placement === 'bottom' ? 'center top' : 'center bottom'
+                            }}
+                        >
+                            <Paper>
+                                <ClickAwayListener onClickAway={(e) => handleCloseProfile(e)}>
+                                    <MenuList role="menu">
+                                        <MenuItem
+                                            onClick={(e) => handleRedirect(e, `/profile/${ auth.me ? auth.me.id : ''}`)}
+                                            className={classes.dropdownItem}
+                                        >
+                                            Profile
+                                        </MenuItem>
+                                        <Divider light />
+                                        <MenuItem
+                                            onClick={(e) => handleLogout(e)}
+                                            className={classes.dropdownItem}
+                                        >
+                                            Logout
+                                        </MenuItem>
+                                    </MenuList>
+                                </ClickAwayListener>
+                            </Paper>
+                        </Grow>
+                    )}
+                </Popper>
+            </div>
+        </div>
+    );
+};
 
 const mapStateToProps = state => {
     return {
@@ -261,4 +224,4 @@ const mapDispatchToProps = dispatch => {
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(Menu));
+export default connect(mapStateToProps, mapDispatchToProps)(Menu);
