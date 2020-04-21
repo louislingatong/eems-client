@@ -1,29 +1,23 @@
 import '../scss/styles.scss';
-
 import React, { useEffect } from 'react';
-import Router from 'next/router';
-import AdminLayout from '../layouts/AdminLayout';
-
-import initialize from '../utils/Initialize';
+import withAdminLayout from '../src/layouts/admin';
+import { withAuth } from '../src/utils/withAuth';
+import Page from '../src/modules/dashboard';
 
 const Dashboard = props => {
     useEffect(() => {
-        const { auth } = props;
-
-        if (!auth.isAuthenticated) {
-            Router.replace('/login');
-        }
+        //
     });
 
     return (
         <React.Fragment>
-            <AdminLayout />
+            <Page {...props}/>
         </React.Fragment>
     );
 };
 
-Dashboard.getInitialProps = (ctx) => {
-    return initialize(ctx);
+Dashboard.getInitialProps = () => {
+    //
 };
 
-export default Dashboard;
+export default withAuth(withAdminLayout(Dashboard));

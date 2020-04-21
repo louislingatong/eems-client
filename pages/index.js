@@ -1,26 +1,27 @@
 import '../scss/styles.scss';
-
-import React, { useEffect } from 'react';
 import Router from 'next/router';
+import { getCookie } from '../src/utils/Cookie';
 
-import initialize from '../utils/Initialize';
+const Index = () => null;
 
-const Index = props => {
-    useEffect(() => {
-        const { auth } = props;
-
-        if (auth.isAuthenticated) {
+Index.getInitialProps = ctx => {
+    if (ctx.isServer) {
+        const token = getCookie('token', ctx.req);
+        if (token) {
+            ctx.res.writeHead(301, { Location: '/dashboard' });
+            ctx.res.end();
+        } else {
+            ctx.res.writeHead(301, { Location: '/login' });
+            ctx.res.end();
+        }
+    } else {
+        const token = getCookie('token');
+        if (token) {
             Router.replace('/dashboard');
         } else {
             Router.replace('/login');
         }
-    });
-
-    return <React.Fragment />;
-};
-
-Index.getInitialProps = (ctx) => {
-    return initialize(ctx);
+    }
 };
 
 export default Index;
