@@ -1,19 +1,23 @@
+import React from 'react';
 import Document, { Head, Main, NextScript } from 'next/document';
-// @material-ui styles
 import { ServerStyleSheets } from '@material-ui/styles';
 
 class MyDocument extends Document {
-    render() {
+    render () {
         return (
-            <html lang='en'>
+            <html lang='pt-BR' dir='ltr'>
                 <Head>
-                    <meta charset="utf-8" />
+                    <meta charSet="utf-8" />
                     <meta
                         name="viewport"
                         content="width=device-width, initial-scale=1, shrink-to-fit=no"
                     />
                     <meta name="theme-color" content="#000000" />
-                    <link rel='shortcut icon' href={require('../assets/img/logo.png')} />
+                    <link
+                        rel="stylesheet"
+                        href="//cdn.jsdelivr.net/chartist.js/latest/chartist.min.css"
+                    />
+                    <script src="//cdn.jsdelivr.net/chartist.js/latest/chartist.min.js"></script>
                     {/* Fonts and icons */}
                     <link
                         rel="stylesheet"
@@ -28,8 +32,7 @@ class MyDocument extends Document {
                         href="//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
                     />
                 </Head>
-                <body style={{margin: '0'}}>
-                    <div id='page-transition'></div>
+                <body>
                     <Main />
                     <NextScript />
                 </body>
@@ -39,26 +42,23 @@ class MyDocument extends Document {
 }
 
 MyDocument.getInitialProps = async ctx => {
-    // Render app and page and get the context of the page with collected side effects.
     const sheets = new ServerStyleSheets();
     const originalRenderPage = ctx.renderPage;
 
-    ctx.renderPage = () =>
-        originalRenderPage({
-            enhanceApp: App => props => sheets.collect(<App {...props} />)
-        });
+    ctx.renderPage = () => originalRenderPage({
+        enhanceApp: WrappedComponent => props => sheets.collect(<WrappedComponent {...props} />)
+    });
 
     const initialProps = await Document.getInitialProps(ctx);
 
     return {
         ...initialProps,
-        // Styles fragment is rendered after the app and page rendering finish.
-        styles: [
-            <React.Fragment key='styles'>
+        styles: (
+            <React.Fragment>
                 {initialProps.styles}
                 {sheets.getStyleElement()}
             </React.Fragment>
-        ]
+        )
     };
 };
 

@@ -1,23 +1,36 @@
-import { Provider } from 'react-redux';
-import App from 'next/app';
+import App, { Container } from 'next/app';
+import Head from 'next/head';
 import withRedux from 'next-redux-wrapper';
-import { initStore } from '../store';
+import { Provider } from 'react-redux';
+import store from '../src/store';
 
 class MyApp extends App {
-
-    static async getInitialProps({ Component, ctx }) {
-        const pageProps = Component.getInitialProps ? await Component.getInitialProps(ctx) : {};
-        return {pageProps};
+    static async getInitialProps ({ Component, ctx }) {
+        return {
+            pageProps: Component.getInitialProps
+                ? await Component.getInitialProps(ctx)
+                : {}
+        };
     }
 
-    render() {
-        const { Component, pageProps, store } = this.props;
+    render () {
+        const {
+            Component,
+            pageProps,
+            store
+        } = this.props;
+
         return (
-            <Provider store={store}>
-                <Component {...pageProps} />
-            </Provider>
+            <Container>
+                <Head>
+                    <title>Employee Engagement Management System</title>
+                </Head>
+                <Provider store={store}>
+                    <Component {...pageProps} />
+                </Provider>
+            </Container>
         );
     }
 }
 
-export default withRedux(initStore, { debug: true })(MyApp);
+export default withRedux(store, { debug: true })(MyApp);
